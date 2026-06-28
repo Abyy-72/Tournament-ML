@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ML Tournament 2025</title>
+<link rel="stylesheet" href="css/style.css">
+<!-- Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<!-- Loading screen -->
+<div class="loading-screen" id="loading-screen">
+  <div class="spinner"></div>
+  <div class="loading-txt">Memuat data turnamen...</div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Admin login modal -->
+<div class="login-overlay" id="login-overlay">
+  <div class="login-modal">
+    <h3>🔐 ADMIN LOGIN</h3>
+    <p>Masukkan PIN 4 digit untuk akses admin</p>
+    <div class="pin-inputs">
+      <input class="pin-inp" type="password" maxlength="1" id="p0" oninput="pinInput(0)" onkeydown="pinKey(event,0)">
+      <input class="pin-inp" type="password" maxlength="1" id="p1" oninput="pinInput(1)" onkeydown="pinKey(event,1)">
+      <input class="pin-inp" type="password" maxlength="1" id="p2" oninput="pinInput(2)" onkeydown="pinKey(event,2)">
+      <input class="pin-inp" type="password" maxlength="1" id="p3" oninput="pinInput(3)" onkeydown="pinKey(event,3)">
+    </div>
+    <div class="pin-err" id="pin-err"></div>
+    <div class="login-btns">
+      <button class="btn btn-s" onclick="closeLogin()">Batal</button>
+      <button class="btn btn-p" onclick="submitPin()">Masuk</button>
+    </div>
+  </div>
+</div>
+
+<!-- Floating admin button -->
+<button class="admin-btn" id="admin-btn" onclick="toggleAdminLogin()" title="Admin Login">🔐</button>
+
+<!-- Header -->
+<header>
+  <div class="logo">ML <b>·</b> TOURNAMENT</div>
+  <div class="hbtns">
+    <span style="display:flex;align-items:center;font-family:Rajdhani,sans-serif;font-size:11px;color:var(--muted)">
+      <span class="sync-dot" id="sync-dot"></span>
+      <span id="sync-txt">–</span>
+    </span>
+    <button class="btn btn-s admin-only" onclick="resetAll()">↺ Reset</button>
+    <button class="btn btn-p" onclick="exportData()">↓ Export</button>
+  </div>
+</header>
+
+<!-- Tabs -->
+<div class="tabs">
+  <button class="tab on"         onclick="showTab('bracket',this)">🏆 Bracket</button>
+  <button class="tab admin-only" onclick="showTab('teams',this)">✏️ Edit Tim</button>
+  <button class="tab"            onclick="showTab('standings',this)">📊 Standings</button>
+</div>
+
+<!-- Panel Bracket -->
+<div id="panel-bracket" class="panel on">
+  <div class="bwrap">
+    <div class="ibar">
+      <div class="iitem"><div class="idot"></div>R32 · R16 · QF = Best of 3</div>
+      <div class="iitem"><div class="idot v"></div>Semifinal = Best of 5</div>
+      <div class="iitem"><div class="idot g"></div>Final = Best of 5</div>
+      <div class="iitem"><div class="idot b"></div>Perebutan Juara 3 = Best of 5</div>
+    </div>
+    <div class="bcanvas" id="bcanvas"></div>
+  </div>
+</div>
+
+<!-- Panel Edit Tim -->
+<div id="panel-teams" class="panel">
+  <div class="ewrap">
+    <div class="stitle">Edit Tim</div>
+    <div class="ibar">
+      <div class="iitem"><div class="idot"></div>Ubah nama &amp; warna — bracket otomatis update</div>
+    </div>
+    <div class="tgrid" id="tgrid"></div>
+    <div style="display:flex;gap:9px;flex-wrap:wrap">
+      <button class="btn btn-s" onclick="randomSeeds()">🎲 Acak Seeding</button>
+      <button class="btn btn-s" onclick="resetNames()">↺ Reset Default</button>
+    </div>
+  </div>
+</div>
+
+<!-- Panel Standings -->
+<div id="panel-standings" class="panel">
+  <div class="swrap">
+    <div class="stitle">Standings</div>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th><th>Tim</th><th>Babak</th><th>W</th><th>L</th><th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="stbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Score Modal -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h3 id="mtitle">INPUT SKOR</h3>
+    <div class="msub" id="msub"></div>
+    <div class="srow">
+      <div class="sname" id="mn1"></div>
+      <input class="sinp" type="number" id="si1" min="0" max="5" value="0">
+    </div>
+    <div class="srow">
+      <div class="sname" id="mn2"></div>
+      <input class="sinp" type="number" id="si2" min="0" max="5" value="0">
+    </div>
+    <div class="mhint" id="mhint"></div>
+    <div class="merr"  id="merr"></div>
+    <div class="mbtns">
+      <button class="btn btn-s" onclick="closeModal()">Batal</button>
+      <button class="btn btn-p" onclick="submitScore()">✓ Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- JS Files — urutan penting! -->
+<script src="js/config.js"></script>
+<script src="js/bracket.js"></script>
+<script src="js/db.js"></script>
+<script src="js/teams.js"></script>
+<script src="js/standings.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/main.js"></script>
+
+</body>
+</html>
