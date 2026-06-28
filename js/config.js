@@ -12,7 +12,7 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 // 1. Buka: https://emn178.github.io/online-tools/sha256.html
 // 2. Ketik PIN kamu → copy hasilnya ke sini
 // Contoh di bawah = hash dari PIN "1234"
-const ADMIN_PIN_HASH = '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4';
+const ADMIN_PIN_HASH = '475368189e17ec9d12cf43f873f4ba27b0ae9ccbd0686fa21f5caad89ed57243';
 
 // Bracket layout
 const CARD_W  = 185;
