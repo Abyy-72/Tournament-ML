@@ -48,29 +48,34 @@ async function resetAll() {
 }
 
 function exportData() {
-  const results = [];
-  for(let r=0; r<=5; r++){
-    matches[r].forEach((m,i)=>{
-      if(m.s1===null) return;
-      results.push({
-        round:  r===5?'3rd Place Match':RNAMES[r],
-        match:  r===5?'M32':'M'+(matchNum(r,i)),
-        team1:  m.t1!==null?teams[m.t1].name:'TBD',
-        team2:  m.t2!==null?teams[m.t2].name:'TBD',
-        score:  `${m.s1}-${m.s2}`,
-        winner: m.win!==null?teams[m.win].name:null
-      });
+  const wb = XLSX.utils.book_new();
+
+  // ── Sheet 1: Hasil Pertandingan ──
+  const resultsData = [['Round', 'Match', 'Team 1', 'Team 2', 'Score', 'Winner']];
+  for (let r = 0; r <= 5; r++) {
+    matches[r].forEach((m, i) => {
+      if (m.s1 === null) return;
+      resultsData.push([
+        r === 5 ? '3rd Place Match' : RNAMES[r],
+        r === 5 ? 'M32' : 'M' + matchNum(r, i),
+        m.t1 !== null ? teams[m.t1].name : 'TBD',
+        m.t2 !== null ? teams[m.t2].name : 'TBD',
+        `${m.s1}-${m.s2}`,
+        m.win !== null ? teams[m.win].name : '-'
+      ]);
     });
   }
-  const blob = new Blob([JSON.stringify({
-    exported: new Date().toISOString(),
-    teams: teams.map(t=>({...t, logo: t.logo?'[logo]':null})),
-    results
-  }, null, 2)], {type:'application/json'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'ml-tournament.json';
-  a.click();
+  const wsResults = XLSX.utils.aoa_to_sheet(resultsData);
+  XLSX.utils.book_append_sheet(wb, wsResults, 'Hasil Pertandingan');
+
+  // ── Sheet 2: Daftar Tim ──
+  const teamsData = [['Seed', 'Nama Tim']];
+  teams.forEach(t => teamsData.push([t.seed, t.name]));
+  const wsTeams = XLSX.utils.aoa_to_sheet(teamsData);
+  XLSX.utils.book_append_sheet(wb, wsTeams, 'Daftar Tim');
+
+  // ── Download ──
+  XLSX.writeFile(wb, `ml-tournament-${new Date().toISOString().slice(0,10)}.xlsx`);
 }
 
 // ── KEYBOARD SHORTCUTS ──
@@ -110,3 +115,4 @@ async function boot() {
 }
 
 boot();
+
